@@ -59,7 +59,7 @@ You should have separate tables for topics, articles, users and comments, and yo
 
   - `comment_id` which is the primary key
   - `author` field that references a user's primary key (username)
-  - `article_id` field that references an article's primary key
+  - `article_id` field that references an article's primary key - belongs_to
   - `votes` defaults to 0
   - `created_at` defaults to the current date
   - `body`

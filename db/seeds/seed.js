@@ -1,5 +1,5 @@
 const { articlesData, commentsData, topicsData, usersData } = require('../data/index.js');
-const { createRef, formatData, formatTime } = require("../../utils/functions");
+const { createRef, formatData, formatTime, changeKeys } = require("../../utils/functions");
 
 exports.seed = (knex, Promise) => {
   return knex.migrate
@@ -9,7 +9,7 @@ exports.seed = (knex, Promise) => {
       knex("topics")
         .insert(topicsData)
         .returning("*")
-        
+
     ).then(() => {
       return knex("users")
         .insert(usersData)
@@ -18,7 +18,8 @@ exports.seed = (knex, Promise) => {
       return knex("articles")
         .insert(formatTime(articlesData))
         .returning("*")
-    }).then((data)=> {
-      console.log(data, commentsData)
+    }).then(() => {
+      const correctAuthorKeys = changeKeys(commentsData, "created_by", "author")
+      console.log(correctAuthorKeys)
     })
 };
