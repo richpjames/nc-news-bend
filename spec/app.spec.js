@@ -45,5 +45,42 @@ describe.only("/", () => {
           });
       });
     });
+    describe("/articles", () => {
+      it("GET status: 200 returns an object containing the correct properties and comment_count", () => {
+        return request(app)
+          .get("/api/articles/2")
+          .expect(200)
+          .then(({ body }) => {
+            expect(body).to.be.an("array");
+            expect(body[0]).to.contain.keys(
+              "author",
+              "title",
+              "article_id",
+              "body",
+              "topic",
+              "created_at",
+              "votes",
+              "comment_count"
+            );
+          });
+      });
+      it("GET status: 200 for an invalid article_id - status:404 and error message", () => {
+        return request(app)
+          .get("/api/articles/0")
+          .expect(404)
+          .then(({ body }) => {
+            expect(body.msg).to.equal("No article found for article_id: 0");
+          });
+      });
+      it("GET status: 200 for an bad request article_id - status:400 and error message", () => {
+        return request(app)
+          .get("/api/articles/not!An!ID")
+          .expect(400)
+          .then(({ body }) => {
+            console.log(body.msg);
+            expect(body.msg).to.equal("Bad request - incorrect input type");
+          });
+      });
+    });
   });
 });

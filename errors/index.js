@@ -17,4 +17,15 @@ exports.handleCustomErrors = (err, req, res, next) => {
     });
   else next(err);
 };
+
+exports.handlePsqlErrors = (err, req, res, next) => {
+  const psqlCodes = ["22P02"];
+  if (psqlCodes.includes(err.code))
+    res.status(400).send({
+      msg: "Bad request - incorrect input type"
+    });
+  else {
+    res.status(500).send({ msg: "Internal Server Error" });
+  }
+};
 exports.methodNotAllowed;
