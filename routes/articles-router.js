@@ -1,10 +1,14 @@
 const articlesRouter = require("express").Router();
 const { methodNotAllowed } = require("../errors");
-const { fetchArticlesById } = require("../controllers/articles-controller");
+const {
+  fetchArticlesById,
+  incrementVotes
+} = require("../controllers/articles-controller");
 
 articlesRouter
   .route("/:articles_id")
   .get(fetchArticlesById)
+  .patch(incrementVotes)
   .all(methodNotAllowed);
 
 module.exports = articlesRouter;

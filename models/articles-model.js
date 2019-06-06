@@ -8,3 +8,10 @@ exports.getArticlesById = articleId => {
     .count({ comment_count: "comments.article_id" })
     .where({ "articles.article_id": articleId });
 };
+
+exports.updateVotes = (article_id, increment, next) => {
+  return connection("articles")
+    .where({ article_id })
+    .increment("votes", increment)
+    .returning("*");
+};

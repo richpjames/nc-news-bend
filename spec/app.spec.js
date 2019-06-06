@@ -46,40 +46,83 @@ describe.only("/", () => {
       });
     });
     describe("/articles", () => {
-      it("GET status: 200 returns an object containing the correct properties and comment_count", () => {
-        return request(app)
-          .get("/api/articles/2")
-          .expect(200)
-          .then(({ body }) => {
-            expect(body).to.be.an("array");
-            expect(body[0]).to.contain.keys(
-              "author",
-              "title",
-              "article_id",
-              "body",
-              "topic",
-              "created_at",
-              "votes",
-              "comment_count"
-            );
-          });
+      describe("GET requests", () => {
+        it("status: 200 returns an object containing the correct properties and comment_count", () => {
+          return request(app)
+            .get("/api/articles/2")
+            .expect(200)
+            .then(({ body }) => {
+              expect(body).to.be.an("object");
+              expect(body).to.contain.keys(
+                "author",
+                "title",
+                "article_id",
+                "body",
+                "topic",
+                "created_at",
+                "votes",
+                "comment_count"
+              );
+            });
+        });
+        it("status: 404 for an invalid article_id - status:404 and error message", () => {
+          return request(app)
+            .get("/api/articles/0")
+            .expect(404)
+            .then(({ body }) => {
+              expect(body.msg).to.equal("No article found for article_id: 0");
+            });
+        });
+        it("status: 400 for an bad request article_id - status:400 and error message", () => {
+          return request(app)
+            .get("/api/articles/not!An!ID")
+            .expect(400)
+            .then(({ body }) => {
+              expect(body.msg).to.equal("Bad request - incorrect input type");
+            });
+        });
       });
-      it("GET status: 200 for an invalid article_id - status:404 and error message", () => {
-        return request(app)
-          .get("/api/articles/0")
-          .expect(404)
-          .then(({ body }) => {
-            expect(body.msg).to.equal("No article found for article_id: 0");
-          });
+      describe("PATCH request", () => {
+        it("status: 200 is able to increment votes on an article, given it's article_id, by specified amount and responds with the updated object", () => {
+          return request(app)
+            .patch("/api/articles/2")
+            .expect(200)
+            .send({ inc_votes: 1 })
+            .then(({ body }) => {
+              expect(body.votes).to.equal(1);
+              expect;
+            });
+        });
+        it("status: 404 for an invalid article_id - status:404 and error message", () => {
+          return request(app)
+            .patch("/api/articles/0")
+            .send({ inc_votes: 1 })
+            .expect(404)
+            .then(({ body }) => {
+              expect(body.msg).to.equal("No article found for article_id: 0");
+            });
+        });
+        it("status: 400 for an bad request article_id - status:400 and error message", () => {
+          return request(app)
+            .patch("/api/articles/not!An!ID")
+            .send({ inc_votes: 1 })
+            .expect(400)
+            .then(({ body }) => {
+              expect(body.msg).to.equal("Bad request - incorrect input type");
+            });
+        });
+        it("status: 400 for an bad request inc votes by a string - invalid input - status:400 and error message", () => {
+          return request(app)
+            .patch("/api/articles/2")
+            .send({ inc_votes: "brian" })
+            .expect(400)
+            .then(({ body }) => {
+              expect(body.msg).to.equal("Bad request - incorrect input type");
+            });
+        });
       });
-      it("GET status: 200 for an bad request article_id - status:400 and error message", () => {
-        return request(app)
-          .get("/api/articles/not!An!ID")
-          .expect(400)
-          .then(({ body }) => {
-            console.log(body.msg);
-            expect(body.msg).to.equal("Bad request - incorrect input type");
-          });
+      describe("POST request", () => {
+        it("");
       });
     });
   });
