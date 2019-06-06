@@ -90,7 +90,15 @@ describe.only("/", () => {
             .send({ inc_votes: 1 })
             .then(({ body }) => {
               expect(body.votes).to.equal(1);
-              expect;
+              expect(body).to.contain.keys(
+                "author",
+                "title",
+                "article_id",
+                "body",
+                "topic",
+                "created_at",
+                "votes"
+              );
             });
         });
         it("status: 404 for an invalid article_id - status:404 and error message", () => {
@@ -120,9 +128,34 @@ describe.only("/", () => {
               expect(body.msg).to.equal("Bad request - incorrect input type");
             });
         });
-      });
-      describe("POST request", () => {
-        it("");
+        describe.only("/comments", () => {
+          describe("POST", () => {
+            it("status: 200 is able to post a comment and responds with the posted comment", () => {
+              return request(app)
+                .post("/api/articles/2/comments")
+                .send({
+                  body:
+                    "if you like sprints and katas your should check out Northcoders :P",
+                  username: "lurker"
+                })
+                .expect(201)
+                .then(({ body }) => {
+                  expect(body.comment[0]).to.contain.keys(
+                    "author",
+                    "comment_id",
+                    "article_id",
+                    "author",
+                    "body",
+                    "created_at",
+                    "votes"
+                  );
+                  expect(body.comment[0].body).to.equal(
+                    "if you like sprints and katas your should check out Northcoders :P"
+                  );
+                });
+            });
+          });
+        });
       });
     });
   });

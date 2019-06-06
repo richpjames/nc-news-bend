@@ -15,3 +15,10 @@ exports.updateVotes = (article_id, increment, next) => {
     .increment("votes", increment)
     .returning("*");
 };
+
+exports.insertComment = (article_id, comment) => {
+  return connection("comments")
+    .where({ article_id })
+    .insert({ author: comment.username, body: comment.body })
+    .returning("*");
+};
