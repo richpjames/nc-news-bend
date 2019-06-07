@@ -130,7 +130,7 @@ describe("/", () => {
           });
       });
       describe("GET request", () => {
-        it.only("status: 200 returns an array of article objects and sorts by date and ordered in descending order (default)", () => {
+        it("status: 200 returns an array of article objects and sorts by date and ordered in descending order (default)", () => {
           return request(app)
             .get("/api/articles/")
             .expect(200)
@@ -143,9 +143,10 @@ describe("/", () => {
                 "created_at",
                 "votes",
                 "comment_count"
-              );expect(body.comments).to.be.sorted("created_at", {
-                    descending: "true"
-                  });;
+              );
+              expect(body.comments).to.be.sorted("created_at", {
+                descending: "true"
+              });
             });
         });
       });
@@ -175,7 +176,7 @@ describe("/", () => {
                 );
               });
           });
-          xit("status: 404 for an invalid article_id and error message", () => {
+          it("status: 404 for an invalid article_id and error message", () => {
             return request(app)
               .post("/api/articles/0/comments")
               .send({
@@ -256,11 +257,51 @@ describe("/", () => {
   });
   describe("/comments", () => {
     describe("PATCH", () => {
-      it("status: 200 able to increment votes by patching with a inc_votes object", () => {
+      it("status: 200 able to increment votes by patching with a inc_votes object and returns comment object", () => {
         return request(app)
           .patch("/api/comments/1")
           .send({ inc_votes: 1 })
-          .expect(201);
+          .expect(200)
+          .then(({ body }) => {
+            expect(body.comment[0].votes).to.equal(17);
+            expect(body.comment[0]).to.have.keys(
+              "comment_id",
+              "author",
+              "article_id",
+              "votes",
+              "created_at",
+              "body"
+            );
+          });
+      });
+      it("status: 404 not found", () => {
+        return request(app)
+          .patch("/api/comments/0")
+          .send({ inc_votes: 1 })
+          .expect(404);
+      });
+      it("status: 400 bad request", () => {
+        return request(app)
+          .patch("/api/comments/Not!An!Id")
+          .send({ inc_votes: 1 })
+          .expect(400);
+      });
+    });
+    describe("DELETE", () => {
+      it("status: 204 can delete comments by comment id", () => {
+        return request(app)
+          .delete("/api/comments/1")
+          .expect(204);
+      });
+      it("status: 404 when comment is not found", () => {
+        return request(app)
+          .delete("/api/comments/0")
+          .expect(404);
+      });
+      it("status: 400 when comment id is invalid", () => {
+        return request(app)
+          .delete("/api/comments/Not!An!Id")
+          .expect(400);
       });
     });
   });
