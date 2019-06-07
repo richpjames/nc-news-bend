@@ -6,7 +6,8 @@ exports.getArticlesById = articleId => {
     .leftJoin("comments", "articles.article_id", "comments.article_id")
     .groupBy("articles.article_id")
     .count({ comment_count: "comments.article_id" })
-    .where({ "articles.article_id": articleId });
+    .where({ "articles.article_id": articleId })
+    .returning("*");
 };
 
 exports.updateVotes = (article_id, increment, next) => {
@@ -16,9 +17,27 @@ exports.updateVotes = (article_id, increment, next) => {
     .returning("*");
 };
 
-exports.insertComment = (article_id, comment) => {
-  return connection("comments")
-    .where({ article_id })
-    .insert({ author: comment.username, body: comment.body })
+exports.getAllArticles = (
+  { sort_by = "created_at", order = "desc" },
+  author,
+  topic
+) => {
+  return connection("articles")
+    .select(
+      "articles.author",
+      "articles.title",
+      "articles.article_id",
+      "articles.topic",
+      "articles.created_at",
+      "articles.votes"
+    )
+    .leftJoin("comments", "articles.article_id", "comments.article_id")
+    .groupBy("articles.article_id")
+    .count({ comment_count: "comments.article_id" })
+    .modify(query => {
+      if (author) query.where({ "articles.article_id": author });
+      if (topic) query.where({ "articles.topic": topic });
+    })
+    .orderBy(sort_by, order)
     .returning("*");
 };

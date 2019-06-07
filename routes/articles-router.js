@@ -3,8 +3,15 @@ const { methodNotAllowed } = require("../errors");
 const {
   fetchArticlesById,
   sendVotes,
-  sendComment
+  sendComment,
+  fetchCommentsByArticleId,
+  fetchAllArticles
 } = require("../controllers/articles-controller");
+
+articlesRouter
+  .route("/")
+  .get(fetchAllArticles)
+  .all(methodNotAllowed);
 
 articlesRouter
   .route("/:articles_id")
@@ -14,6 +21,7 @@ articlesRouter
 
 articlesRouter
   .route("/:articles_id/comments")
+  .get(fetchCommentsByArticleId)
   .post(sendComment)
   .all(methodNotAllowed);
 
