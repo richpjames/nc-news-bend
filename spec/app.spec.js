@@ -73,7 +73,7 @@ describe("/", () => {
               expect(body.msg).to.equal("No article found for article_id: 0");
             });
         });
-        it("status: 400 for an bad request article_id - status:400 and error message", () => {
+        it("status: 400 for a bad request article_id - status:400 and error message", () => {
           return request(app)
             .get("/api/articles/not!An!ID")
             .expect(400)
@@ -154,7 +154,7 @@ describe("/", () => {
         describe("POST", () => {
           it("status: 200 is able to post a comment and responds with the posted comment", () => {
             return request(app)
-              .post("/api/articles/2/comments")
+              .post("/api/articles/4/comments")
               .send({
                 body:
                   "if you like sprints and katas you should check out Northcoders :P",
@@ -184,12 +184,12 @@ describe("/", () => {
                   "if you like sprints and katas you should check out Northcoders :P",
                 username: "lurker"
               })
-              .expect(404)
+              .expect(400)
               .then(({ body }) => {
-                expect(body.msg).to.equal("No article found for article_id: 0");
+                expect(body.msg).to.equal("Bad request - incorrect input type");
               });
           });
-          xit("status: 400 for an bad request article_id - status:400 and error message", () => {
+          it("status: 400 for an bad request article_id - status:400 and error message", () => {
             return request(app)
               .post("/api/articles/not!An!ID/comments")
               .send({
@@ -202,7 +202,7 @@ describe("/", () => {
                 expect(body.msg).to.equal("Bad request - incorrect input type");
               });
           });
-          xit("status: 400 for an bad request inc votes by a string - invalid input - status:400 and error message", () => {
+          it("status: 400 for an bad request inc votes by a string - invalid input - status:400 and error message", () => {
             return request(app)
               .post("/api/articles/2")
               .send({
@@ -213,48 +213,49 @@ describe("/", () => {
                 expect(body.msg).to.equal("Bad request - incorrect input type");
               });
           });
-          describe("GET", () => {
-            it("status: 200 retrieves all comments for a given article sorted by created_at in descending order (default)", () => {
-              return request(app)
-                .get("/api/articles/1/comments?sort_by=created_at")
-                .expect(200)
-                .then(({ body }) => {
-                  expect(body).to.be.an("object");
-                  expect(body.comments[0]).to.contain.keys(
-                    "comment_id",
-                    "author",
-                    "created_at",
-                    "votes",
-                    "body"
-                  );
-                  expect(body.comments).to.be.sorted("created_at", {
-                    descending: "true"
-                  });
+        });
+        describe("GET", () => {
+          it("status: 200 retrieves all comments for a given article sorted by created_at in descending order (default)", () => {
+            return request(app)
+              .get("/api/articles/1/comments?sort_by=created_at")
+              .expect(200)
+              .then(({ body }) => {
+                expect(body).to.be.an("object");
+                expect(body.comments[0]).to.contain.keys(
+                  "comment_id",
+                  "author",
+                  "created_at",
+                  "votes",
+                  "body"
+                );
+                expect(body.comments).to.be.sorted("created_at", {
+                  descending: "true"
                 });
-            });
-            it("status: 200 retrieves all comments for a given article sorted by votes in ascending", () => {
-              return request(app)
-                .get("/api/articles/1/comments?sort_by=votes&order=asc")
-                .expect(200)
-                .then(({ body }) => {
-                  expect(body).to.be.an("object");
-                  expect(body.comments[0]).to.contain.keys(
-                    "comment_id",
-                    "author",
-                    "created_at",
-                    "votes",
-                    "body"
-                  );
-                  expect(body.comments).to.be.sorted("created_at", {
-                    descending: "true"
-                  });
+              });
+          });
+          it("status: 200 retrieves all comments for a given article sorted by votes in ascending", () => {
+            return request(app)
+              .get("/api/articles/1/comments?sort_by=votes&order=asc")
+              .expect(200)
+              .then(({ body }) => {
+                expect(body).to.be.an("object");
+                expect(body.comments[0]).to.contain.keys(
+                  "comment_id",
+                  "author",
+                  "created_at",
+                  "votes",
+                  "body"
+                );
+                expect(body.comments).to.be.sorted("created_at", {
+                  descending: "true"
                 });
-            });
+              });
           });
         });
       });
     });
   });
+
   describe("/comments", () => {
     describe("PATCH", () => {
       it("status: 200 able to increment votes by patching with a inc_votes object and returns comment object", () => {

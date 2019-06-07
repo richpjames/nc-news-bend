@@ -1,9 +1,9 @@
 const connection = require("../db/connection");
 
 exports.insertComment = (article_id, comment) => {
+  console.log(article_id);
   return connection("comments")
-    .where({ article_id })
-    .insert({ author: comment.username, body: comment.body })
+    .insert({ author: comment.username, article_id, body: comment.body })
     .returning("*");
 };
 
