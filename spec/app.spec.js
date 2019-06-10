@@ -5,6 +5,7 @@ const request = require("supertest");
 chai.use(require("chai-sorted"));
 const app = require("../app");
 const connection = require("../db/connection");
+const articlesData = require("../db/data/test-data/articles");
 
 describe("/", () => {
   beforeEach(() => connection.seed.run());
@@ -14,6 +15,11 @@ describe("/", () => {
       return request(app)
         .get("/api")
         .expect(200);
+    });
+    it("GET status: 404 - path not found", () => {
+      return request(app)
+        .get("/123124/askhdjasdj")
+        .expect(404);
     });
     describe("/topics", () => {
       it("GET status: 200 returns an object containing all topic object, each object has a key of slug and description", () => {
@@ -135,7 +141,7 @@ describe("/", () => {
             .get("/api/articles/")
             .expect(200)
             .then(({ body }) => {
-              expect(body.comments[0]).to.contain.keys(
+              expect(body.articles[0]).to.contain.keys(
                 "author",
                 "title",
                 "article_id",
@@ -144,8 +150,47 @@ describe("/", () => {
                 "votes",
                 "comment_count"
               );
-              expect(body.comments).to.be.sorted("created_at", {
+              expect(body.articles).to.be.sorted("created_at", {
                 descending: "true"
+              });
+            });
+        });
+        it("status: 200 returns an array of article objects and sorts by author and ordered in descending order ", () => {
+          return request(app)
+            .get("/api/articles?sort_by=author")
+            .expect(200)
+            .then(({ body }) => {
+              expect(body.articles[0]).to.contain.keys(
+                "author",
+                "title",
+                "article_id",
+                "topic",
+                "created_at",
+                "votes",
+                "comment_count"
+              );
+              expect(body.articles).to.be.sorted("author", {
+                descending: "true"
+              });
+            });
+        });
+        it("status: 200 returns an array of article objects and sorts by author and ordered in ascending order ", () => {
+          return request(app)
+            .get("/api/articles?sort_by=author&order=asc")
+            .expect(200)
+            .then(({ body }) => {
+              console.log(body);
+              expect(body.articles[0]).to.contain.keys(
+                "author",
+                "title",
+                "article_id",
+                "topic",
+                "created_at",
+                "votes",
+                "comment_count"
+              );
+              expect(body.articles).to.be.sorted("author", {
+                ascending: "true"
               });
             });
         });
@@ -202,24 +247,14 @@ describe("/", () => {
                 expect(body.msg).to.equal("Bad request - incorrect input type");
               });
           });
-          it("status: 400 for an bad request inc votes by a string - invalid input - status:400 and error message", () => {
-            return request(app)
-              .post("/api/articles/2")
-              .send({
-                username: "lurker"
-              })
-              .expect(400)
-              .then(({ body }) => {
-                expect(body.msg).to.equal("Bad request - incorrect input type");
-              });
-          });
         });
-        describe("GET", () => {
+        describe.only("GET", () => {
           it("status: 200 retrieves all comments for a given article sorted by created_at in descending order (default)", () => {
             return request(app)
               .get("/api/articles/1/comments?sort_by=created_at")
               .expect(200)
               .then(({ body }) => {
+                console.log(body)
                 expect(body).to.be.an("object");
                 expect(body.comments[0]).to.contain.keys(
                   "comment_id",

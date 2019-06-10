@@ -1,13 +1,10 @@
 const {
   getArticlesById,
   updateVotes,
-  getAllArticles
-} = require("../models/articles-model");
-
-const {
+  getAllArticles,
   insertComment,
   getCommentsByArticleId
-} = require("../models/comments-model");
+} = require("../models/articles-model");
 
 exports.fetchArticlesById = (req, res, next) => {
   const { articles_id } = req.params;
@@ -19,7 +16,7 @@ exports.fetchArticlesById = (req, res, next) => {
           msg: `No article found for article_id: ${articles_id}`
         });
       }
-      res.status(200).send(article[0]);
+      res.status(200).send(article);
     })
     .catch(next);
 };
@@ -67,8 +64,8 @@ exports.fetchCommentsByArticleId = (req, res, next) => {
 
 exports.fetchAllArticles = (req, res, next) => {
   getAllArticles(req.query)
-    .then(comments => {
-      res.status(200).send({ comments });
+    .then(articles => {
+      res.status(200).send({ articles });
     })
     .catch(next);
 };

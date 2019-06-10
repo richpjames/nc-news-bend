@@ -7,7 +7,7 @@ const commentsRouter = require("./comments-router");
 
 apiRouter
   .route("/")
-  .get((req, res) => res.send({ ok: true }))
+  .get()
   .all(methodNotAllowed);
 
 apiRouter.use("/topics", topicsRouter);

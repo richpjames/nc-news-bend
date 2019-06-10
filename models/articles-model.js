@@ -41,3 +41,19 @@ exports.getAllArticles = (
     .orderBy(sort_by, order)
     .returning("*");
 };
+
+exports.insertComment = (article_id, comment) => {
+  return connection("comments")
+    .insert({ author: comment.username, article_id, body: comment.body })
+    .returning("*");
+};
+
+exports.getCommentsByArticleId = (
+  article_id,
+  { sort_by = "created_at", order = "desc" }
+) => {
+  return connection("comments")
+    .select("*")
+    .where({ article_id })
+    .orderBy(sort_by, order);
+};
