@@ -25,7 +25,6 @@ exports.sendVotes = (req, res, next) => {
   const increment = req.body.inc_votes;
   const { articles_id } = req.params;
   if (increment > 0) {
-    console.log(increment);
     updateVotes(articles_id, increment)
       .then(article => {
         if (article.length === 0) {
