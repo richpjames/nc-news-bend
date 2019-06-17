@@ -10,18 +10,19 @@ exports.getArticlesById = articleId => {
     .returning("*");
 };
 
-exports.updateVotes = (article_id, increment, next) => {
+exports.updateVotes = (article_id, increment = 0, next) => {
   return connection("articles")
     .where({ article_id })
     .increment("votes", increment)
     .returning("*");
 };
 
-exports.getAllArticles = (
-  { sort_by = "created_at", order = "desc" },
+exports.getAllArticles = ({
+  sort_by = "created_at",
+  order = "desc",
   author,
   topic
-) => {
+}) => {
   return connection("articles")
     .select(
       "articles.author",
@@ -35,7 +36,7 @@ exports.getAllArticles = (
     .groupBy("articles.article_id")
     .count({ comment_count: "comments.article_id" })
     .modify(query => {
-      if (author) query.where({ "articles.article_id": author });
+      if (author) query.where({ "articles.author": author });
       if (topic) query.where({ "articles.topic": topic });
     })
     .orderBy(sort_by, order)
