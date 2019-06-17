@@ -8,7 +8,7 @@ exports.removeComment = comment_id => {
     .returning("*");
 };
 
-exports.updateVotes = (comment_id, increment) => {
+exports.updateVotes = (comment_id, increment = 0) => {
   return connection("comments")
     .where({ comment_id })
     .increment("votes", increment)
