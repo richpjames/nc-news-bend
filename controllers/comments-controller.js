@@ -10,7 +10,7 @@ exports.deleteComment = (req, res, next) => {
     })
     .catch(next);
 };
-exports.sendVotes = (req, res, next) => {
+exports.postVotesForComments = (req, res, next) => {
   const increment = req.body.inc_votes;
   const { comment_id } = req.params;
   updateVotes(comment_id, increment)
