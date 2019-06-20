@@ -10,6 +10,12 @@ exports.getArticlesById = articleId => {
     .returning("*");
 };
 
+exports.checkAuthorExists = author => {
+  return connection("articles")
+    .where({ author: author })
+    .returning("*");
+};
+
 exports.updateVotes = (article_id, increment = 0, next) => {
   return connection("articles")
     .where({ article_id })
