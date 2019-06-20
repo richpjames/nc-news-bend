@@ -2,8 +2,8 @@ const articlesRouter = require("express").Router();
 const { methodNotAllowed } = require("../errors");
 const {
   fetchArticlesById,
-  sendVotes,
-  sendComment,
+  postVotesForArticles,
+  postComment,
   fetchCommentsByArticleId,
   fetchAllArticles
 } = require("../controllers/articles-controller");
@@ -16,13 +16,13 @@ articlesRouter
 articlesRouter
   .route("/:articles_id")
   .get(fetchArticlesById)
-  .patch(sendVotes)
+  .patch(postVotesForArticles)
   .all(methodNotAllowed);
 
 articlesRouter
   .route("/:articles_id/comments")
   .get(fetchCommentsByArticleId)
-  .post(sendComment)
+  .post(postComment)
   .all(methodNotAllowed);
 
 module.exports = articlesRouter;
