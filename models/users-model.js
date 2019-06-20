@@ -1,6 +1,6 @@
 const connection = require("../db/connection");
 
-exports.getUsers = userId => {
+exports.getUsersById = userId => {
   return connection("users")
     .where({ username: userId })
     .select("*");
