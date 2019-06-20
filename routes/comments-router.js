@@ -2,12 +2,12 @@ const commentsRouter = require("express").Router();
 const { methodNotAllowed } = require("../errors");
 const {
   deleteComment,
-  sendVotes
+  postVotesForComments
 } = require("../controllers/comments-controller");
 
 commentsRouter
   .route("/:comment_id")
-  .patch(sendVotes)
+  .patch(postVotesForComments)
   .delete(deleteComment)
   .all(methodNotAllowed);
 
