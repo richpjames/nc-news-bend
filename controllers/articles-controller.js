@@ -4,7 +4,7 @@ const {
   getAllArticles,
   insertComment,
   getCommentsByArticleId,
-  checkAuthorExists
+  checkSortByExists
 } = require("../models/articles-model");
 
 exports.fetchArticlesById = (req, res, next) => {
@@ -67,8 +67,16 @@ exports.fetchCommentsByArticleId = (req, res, next) => {
 };
 
 exports.fetchAllArticles = (req, res, next) => {
-  checkAuthorExists(req.query).then(articles => console.log(articles));
-  getAllArticles(req.query)
+  const { author, topic } = req.query;
+  checkSortByExists(author, topic)
+    .then(res => {
+      if (res.length < 1) {
+        return Promise.reject({
+          status: 404,
+          msg: `No article found for that topic/author`
+        });
+      } else return getAllArticles(req.query);
+    })
     .then(articles => {
       res.status(200).send({ articles });
     })

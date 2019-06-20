@@ -10,9 +10,12 @@ exports.getArticlesById = articleId => {
     .returning("*");
 };
 
-exports.checkAuthorExists = author => {
+exports.checkSortByExists = (author, topic) => {
   return connection("articles")
-    .where({ author: author })
+    .modify(query => {
+      if (author) query.where({ "articles.author": author });
+      if (topic) query.where({ "articles.topic": topic });
+    })
     .returning("*");
 };
 
