@@ -10,7 +10,8 @@ const {
 exports.fetchArticlesById = (req, res, next) => {
   const { articles_id } = req.params;
   getArticlesById(articles_id)
-    .then(article => {
+    .then(articleArr => {
+      const article = articleArr[0];
       if (article.length === 0) {
         return Promise.reject({
           status: 404,
@@ -27,7 +28,8 @@ exports.postVotesForArticles = (req, res, next) => {
   const { articles_id } = req.params;
   if (increment > 0) {
     updateVotes(articles_id, increment)
-      .then(article => {
+      .then(articleArr => {
+        const article = articleArr[0];
         if (article.length === 0) {
           return Promise.reject({
             status: 404,
