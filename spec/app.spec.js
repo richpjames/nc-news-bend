@@ -26,7 +26,6 @@ describe("/", () => {
           .get("/api/topics")
           .expect(200)
           .then(({ body }) => {
-            console.log(body);
             expect(body.topics).to.be.an("array");
             expect(body.topics[0]).to.contain.keys("description", "slug");
           });
@@ -334,7 +333,7 @@ describe("/", () => {
       describe("GET", () => {
         it("status: 200 retrieves all comments for a given article sorted by created_at in descending order (default)", () => {
           return request(app)
-            .get("/api/articles/1/comments?sort_by=created_at")
+            .get("/api/articles/9/comments?sort_by=created_at")
             .expect(200)
             .then(({ body }) => {
               expect(body).to.be.an("object");
