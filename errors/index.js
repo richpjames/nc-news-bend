@@ -2,6 +2,10 @@ exports.routeNotFound = (req, res) => {
   res.status(404).send({ msg: "Route Not Found" });
 };
 
+exports.badRequest = (req, res) => {
+  res.status(400).send({msg: "Bad Request"})
+}
+
 exports.methodNotAllowed = (req, res) => {
   res.status(405).send({ msg: "Method Not Allowed" });
 };
