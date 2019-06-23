@@ -1,4 +1,4 @@
-const endpoints = require("../endpoints-description");
+const endpoints = require("../endpoints");
 
 exports.apiModel = () => {
   return endpoints;
