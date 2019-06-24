@@ -62,13 +62,12 @@ exports.postComment = (req, res, next) => {
           msg: `No article found for article_id: ${articles_id}`
         });
       } else {
-        insertComment(articles_id, comment).then(commentInArray => {
-          const [comment] = commentInArray;
-          res.status(201).send({ comment });
-        });
+       return  insertComment(articles_id, comment)
       }
-    })
-    .catch(next);
+    }).then(commentInArray => {
+      const [comment] = commentInArray;
+      res.status(201).send({ comment });
+    }).catch(next);
 };
 
 exports.fetchAllArticles = (req, res, next) => {
