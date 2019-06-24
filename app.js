@@ -5,9 +5,11 @@ const {
   routeNotFound,
   handle500,
   handlePsqlErrors
-} = require("./errors");
+} = require("./errors")
+const cors = require('cors')
 
 const app = express();
+app.use(cors())
 
 app.use(express.json());
 
