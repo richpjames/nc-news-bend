@@ -10,7 +10,7 @@ describe("/", () => {
   beforeEach(() => connection.seed.run());
   after(() => connection.destroy());
   describe("/api", () => {
-    it("GET status:200", () => {
+    it.only("GET status:200", () => {
       return request(app)
         .get("/api")
         .expect(200);
