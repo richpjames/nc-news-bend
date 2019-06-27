@@ -10,7 +10,7 @@ describe("/", () => {
   beforeEach(() => connection.seed.run());
   after(() => connection.destroy());
   describe("/api", () => {
-    it.only("GET status:200", () => {
+    it("GET status:200", () => {
       return request(app)
         .get("/api")
         .expect(200);
@@ -277,10 +277,11 @@ describe("/", () => {
     });
     describe("/articles/comments", () => {
       describe("POST", () => {
-        it("status: 200 is able to post a comment and responds with the posted comment", () => {
+        it.only("status: 200 is able to post a comment and responds with the posted comment", () => {
           return request(app)
             .post("/api/articles/4/comments")
             .send({
+              username: "bobbyknoders",
               body:
                 "if you like sprints and katas you should check out Northcoders :P",
               username: "lurker"
