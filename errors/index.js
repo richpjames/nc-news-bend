@@ -26,6 +26,6 @@ exports.handlePsqlErrors = (err, req, res, next) => {
   const psqlCodes = ["22P02", "23502", "23503", "42703", "22P02"];
   if (psqlCodes.includes(err.code))
     res.status(400).send({
-      msg: `Bad request - incorrect input type ${err}`
+      msg: `Bad request - incorrect input type`
     });
 };

@@ -277,7 +277,7 @@ describe("/", () => {
     });
     describe("/articles/comments", () => {
       describe("POST", () => {
-        it.only("status: 200 is able to post a comment and responds with the posted comment", () => {
+        it("status: 200 is able to post a comment and responds with the posted comment", () => {
           return request(app)
             .post("/api/articles/4/comments")
             .send({
