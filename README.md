@@ -1,87 +1,111 @@
-# NC News
+# NC News Backend.
+
+This repo serves as a RESTful API for my NC News Frontend. It is hosted [here](https://rich-james-nc-news.herokuapp.com/api/). The site can also be found [here](https://rich-nc-news.netlify.com/)
 
 Northcoders News is a social news aggregation, web content rating, and discussion website. Think something along the lines of [Reddit](https://www.reddit.com/). Northcoders News has articles which are divided into topics. Each article has user curated ratings and can be up or down voted using the API. Users can also add comments about an article. Comments can also be up or down voted. A user can add comments and remove any comments which they have added.
+
+## Prerequisites
+
+First ensure you have [Node.js](https://nodejs.org/en/) and [PostgreSQL](https://www.postgresql.org/) installed.
+
 ## Getting Started
 
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
+First ensure you have Node.js and PostgreSQL installed. If you would like to run this repo on your own machine then feel free to clone it. Make sure you have postgres installed and running, then run `npm install` to install dependencies.
 
-### Prerequisites
-
-What things you need to install the software and how to install them
+For testing and development, you will need your own _knexfile.js_, make sure you add this to your _.gitignore_ file. Here's what it should look like:
 
 ```
-Give examples
+const ENV = process.env.NODE_ENV || 'development';
+const { DB_URL } = process.env;
+
+const baseConfig = {
+  client: 'pg',
+  migrations: {
+    directory: './db/migrations',
+  },
+  seeds: {
+    directory: './db/seeds',
+  },
+};
+
+const customConfigs = {
+  development: {
+    connection: {
+      database: 'nc_news',
+      // username: "" << linux users only
+      // password: "" << linux users only
+    },
+  },
+  test: {
+    connection: {
+      database: 'nc_news_test',
+      // username: "", << linux users only
+      // password: "", << linux users only
+    },
+  },
+  production: {
+    connection: `${DB_URL}?ssl=true`,
+  },
+};
+
+module.exports = { ...baseConfig, ...customConfigs[ENV] };
 ```
 
-### Installing
+To seed the databse run `npm run seed`.
 
-A step by step series of examples that tell you how to get a development env running
+Then run the application by running `npm run dev`, this will start up the local server.
 
-Say what the step will be
-
-```
-Give the example
-```
-
-And repeat
-
-```
-until finished
-```
-
-End with an example of getting some data out of the system or using it for a little demo
+Once the local server is up and running navigate your browser to localhost:9090/api.
+This endpoint describes all the other available endpoints of the API.
 
 ## Running the tests
 
-Explain how to run the automated tests for this system
-
-### Break down into end to end tests
-
-Explain what these tests test and why
-
-```
-Give an example
-```
-
-### And coding style tests
-
-Explain what these tests test and why
-
-```
-Give an example
-```
-
-## Deployment
-
-Add additional notes about how to deploy this on a live system
+To run tests type and run `npm test` in the terminal when in the repo. This will run tests using the [Mocha](https://mochajs.org/) test framework, [Chai](https://www.chaijs.com/) assertion library and the [Supertest](https://github.com/visionmedia/supertest) HTTP server testing library. First the API endpoints are tested followed by the utility functions neccessary for seeding the data.
 
 ## Built With
 
-* [Dropwizard](http://www.dropwizard.io/1.0.2/docs/) - The web framework used
-* [Maven](https://maven.apache.org/) - Dependency Management
-* [ROME](https://rometools.github.io/rome/) - Used to generate RSS Feeds
+- [Express](https://expressjs.com/) - The web framework used
 
-## Contributing
+## API Routes
 
-Please read [CONTRIBUTING.md](https://gist.github.com/PurpleBooth/b24679402957c63ec426) for details on our code of conduct, and the process for submitting pull requests to us.
+#### GET
 
-## Versioning
+`/api`
+Serves a json object representing all the available endpoints of the API
 
-We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/your/project/tags). 
+`/api/topics`
+Serves an array of all topics
 
-## Authors
+`/api/articles`
+Serves an array of all articles
 
-* **Billie Thompson** - *Initial work* - [PurpleBooth](https://github.com/PurpleBooth)
+`/api/users/:username`
+Responds with a a user object with details about the given user
 
-See also the list of [contributors](https://github.com/your/project/contributors) who participated in this project.
+`/api/articles/:article_id`
+Responds with an article object for the given article ID
 
-## License
+`/api/articles/:article_id/comments`
+When given a valid article ID, responds with an array of comments for that article
 
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
+#### PATCH
+
+`/api/articles/:article_id`
+Accepts an object in the form of `{ inc_votes: newVote}` and responds with the updated article
+
+`/api/comments/:comment_id`
+Accepts an object in the form of `{ inc_votes: newVote}` and responds with the updated comment
+
+#### POST
+
+`/api/articles/:article_id/comments`
+Request body accepts an object in the form of `{username: 'someusername', body: 'some body'}` and responds with the posted comment
+
+#### DELETE
+
+`/api/comments/:comment_id`
+Deletes the comment given by comment_id and responds with status 204
 
 ## Acknowledgments
 
-* Hat tip to anyone whose code was used
-* Inspiration
-* etc
-
+- Northcoders
